@@ -1,56 +1,76 @@
-----atendimento+ cliente+vendedor----
+BEGIN TRANSACTION;
+----tabela cliente----
+ Create table cliente (
+ id_cliente INTEGER PRIMARY KEY AUTOINCREMENT,
+ nome TEXT NOT NULL,
+ telefone TEXT,
+ cpf TEXT);
+ 
+----tabela vendedor----
+ Create table vendedor (
+ id_vendedor  INTEGER PRIMARY KEY AUTOINCREMENT,
+ nome_vendedor TEXT NOT NULL,
+ telefone TEXT
+ );
+ 
+----tabela atendimento----
+ Create table atendimento (
+ id_atendimento  INTEGER PRIMARY KEY AUTOINCREMENT,
+ data_atendimento TEXT,
+ id_cliente INTEGER,
+ id_vendedor INTEGER,
+ FOREIGN KEY (id_cliente) REFERENCES cliente(id_cliente),
+ FOREIGN KEY (id_vendedor) REFERENCES vendedor(id_vendedor)
+ );
+ 
+----tabela pedido----
+ Create table pedido (
+ id_pedido INTEGER PRIMARY KEY AUTOINCREMENT,
+ data TEXT NOT NULL,
+ valor_total TEXT,
+ numero_pedido TEXT,
+ id_cliente INTEGER,
+ id_vendedor INTEGER,
+ FOREIGN KEY (id_cliente) REFERENCES cliente(id_cliente),
+ FOREIGN KEY (id_vendedor) REFERENCES vendedor(id_vendedor)
+ );
+ 
 
-select
- a.id_atendimento,
- a.data_atendimento AS data_atendimento,
- c.nome AS nome_cliente,
- c.telefone AS telefone_cliente,
- c.cpf AS cpf_cliente,
- v.nome AS nome_vendedor,
- v.telefone AS telefone_vendedor
- FROM atendimento a ---tabela principal---
- JOIN cliente c 
-  ON c.id_cliente = a.id_cliente --- join:atendimento + cliente
-JOIN vendedor v
-    ON v.id_vendedor = a.id_vendedor;
-    
-----pedido+ cliente + vendedor----
-select
-p.id_pedido,
-p.numero_pedido,
-p.data,
-p.valor_total,
-c.id_cliente,
-c.nome AS nome_cliente,
-c.telefone AS telefone_cliente,
-c.cpf AS cpf_cliente,
-v.id_vendedor,
-v.nome AS nome_vendedor,
-v.telefone AS telefone_vendedor
-FROM pedido p
-JOIN cliente c 
- ON p.id_cliente = c.id_cliente
- JOIN vendedor v 
-  ON p.id_vendedor = v.id_vendedor;
-  
+----tabela item venda----
+ Create table item_venda (
+ id_item_venda INTEGER PRIMARY KEY AUTOINCREMENT,
+ quantidade TEXT,
+ valor_venda TEXT,
+ id_pedido INTEGER,
+ id_mercadoria INTEGER,
+ FOREIGN KEY (id_pedido) REFERENCES pedido(id_pedido),
+ FOREIGN KEY (id_mercadoria) REFERENCES mercadoria(id_mercadoria)
+ );
 
----pedido+ item venda+ mercadoria
-select
-p.id_pedido,
-p.numero_pedido,
-p.data,
-p.valor_total,
-iv.id_item_venda,
-iv.quantidade AS quantidade_vendida,
-m.id_mercadoria,
-m.nome AS nome_mercadoria,
-m.valor_unidade,
-m.quantidade AS estoque_atual
-FROM item_venda iv
-JOIN pedido p
- ON iv.id_pedido = p.id_pedido
- JOIN mercadoria m 
-  ON iv.id_mercadoria = m.id_mercadoria;
+----tabela mercadoria----
+ Create table mercadoria (
+ id_mercadoria INTEGER PRIMARY KEY AUTOINCREMENT,
+ nome TEXT NOT NULL,
+ valor_unidade TEXT,
+ quantidade INTEGER
+ );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
